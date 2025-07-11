@@ -70,7 +70,7 @@
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>fr.bvarillon.lox.lox</mainClass>
+                <mainClass>fr.bvarillon.lox.Lox</mainClass>
               </manifest>
             </archive>
           </configuration>

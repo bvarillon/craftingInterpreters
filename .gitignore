@@ -2,3 +2,7 @@ target/
 build/
 .mvn
 .cache
+.classpath
+.project
+.settings
+test.lox

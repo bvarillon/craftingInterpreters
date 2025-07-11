@@ -81,6 +81,8 @@ public class Scanner {
             case '/':
                 if (match('/')) {
                     while (peek() != '\n' && !isAtEnd()) advance();
+                } else if (match('*')) {
+                    multi_comment();
                 } else {
                     addToken(SLASH);
                 }
@@ -101,7 +103,7 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    lox.error(line, "Unexpected character.");
+                    Lox.error(line, "Unexpected character.");
                 }
                 break;
         }
@@ -135,7 +137,7 @@ public class Scanner {
 
     private char peekNext() {
         if (current +1 >= source.length()) return '\0';
-        return source.charAt(+1);
+        return source.charAt(current+1);
     }
 
     private void string() {
@@ -144,7 +146,7 @@ public class Scanner {
             advance();
         }
         if (isAtEnd()) {
-            lox.error(line, "Unterminated string.");
+            Lox.error(line, "Unterminated string.");
             return;
         }
         advance();
@@ -182,6 +184,21 @@ public class Scanner {
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
         if (type == null) type = IDENTIFIER;
-        addToken(IDENTIFIER);
+        addToken(type);
+    }
+    private void multi_comment() {
+        while ((peek() != '*' || peekNext() != '/') && !isAtEnd()) {
+            if (peek() == '\n') line++;
+            if(match('/') && match('*')){
+                multi_comment();
+            } else advance();
+        }
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated multi-lines comment.");
+            return;
+        }
+        advance();
+        advance();
+        
     }
 }
