@@ -27,24 +27,7 @@ public class Parser {
     }
 
     private Expr expression() {
-        return comma_separated();
-    }
-
-    private Expr ternary_operator(){
-        if(match("()")){
-
-        }
-        return comma_separated();
-    }
-
-    private Expr comma_separated() {
-        Expr  expr = equality();
-        while(match(COMMA)) {
-            Token operator = previous();
-            Expr right = equality();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-        return expr;
+        return equality();
     }
 
     private Expr equality() {
