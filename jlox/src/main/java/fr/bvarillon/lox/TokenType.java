@@ -2,7 +2,7 @@ package fr.bvarillon.lox;
 
 public enum TokenType {
     // Single character
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR, DOUBLE_DOT, QUESTION,
 
     // One or two charecters 
     BANG, BANG_EQUAL,
