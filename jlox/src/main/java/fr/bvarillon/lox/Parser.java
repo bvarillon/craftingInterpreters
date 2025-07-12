@@ -193,8 +193,20 @@ public class Parser {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
+        } else if (missing_op()){
+            return expression();
         }
         throw error(peek(), "Expect expression.");
+    }
+
+    private boolean missing_op() {
+    if(match(PLUS,STAR,SLASH,GREATER_EQUAL,GREATER,LOWER_EQUAL,LOWER,BANG_EQUAL,EQUAL_EQUAL)) {
+        Token token = previous();
+        error(token, "Expect expression before binary operator.");
+        expression();
+        return true;
+    }
+        return false;
     }
 
     private boolean match(TokenType...types) {
@@ -236,7 +248,7 @@ public class Parser {
     }
 
     private ParseError error(Token token, String message) {
-        Lox.error(token.line, message);
+        Lox.error(token, message);
         return new ParseError();
     }
 
