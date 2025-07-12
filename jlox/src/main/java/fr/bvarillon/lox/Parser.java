@@ -101,6 +101,29 @@ public class Parser {
             error(equals, "Invalid assignment target.");
         }
 
+        return ternary_operator();
+    }
+
+    private Expr ternary_operator(){
+        Expr expr = comma_separated(); 
+        if (match(QUESTION)) {
+            Token question = previous();
+            Expr left = comma_separated();
+            consume(DOUBLE_DOT, "Expect ':' in ternary_operator.");
+            Token double_dot = previous();
+            Expr right = comma_separated();
+            expr = new Expr.Binary(expr, question, new Expr.Binary(left, double_dot, right));
+        }
+        return expr; 
+    }
+
+    private Expr comma_separated() {
+        Expr  expr = equality();
+        while(match(COMMA)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Binary(expr, operator, right);
+        }
         return expr;
     }
 
@@ -171,7 +194,7 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
-        throw error(peek(), "Expect expression");
+        throw error(peek(), "Expect expression.");
     }
 
     private boolean match(TokenType...types) {
