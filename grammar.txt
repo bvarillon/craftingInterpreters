@@ -1,0 +1,12 @@
+expression     → ternary_op ;
+ternary_op     → comma_sep ("?" comma_sep ":" comma_sep)?
+comma_sep      → equality ("," equality)* ;
+equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+term           → factor ( ( "-" | "+" ) factor )* ;
+factor         → unary ( ( "/" | "*" ) unary )* ;
+unary          → ( "!" | "-" ) unary
+               | primary ;
+primary        → NUMBER | STRING | "true" | "false" | "nil"
+               | "(" expression ")" | missing_op;
+missing_op     → ("+" | "/" | "*" | "<=" | "<" | ">=" | ">" | "!=" | "==") expression ;
