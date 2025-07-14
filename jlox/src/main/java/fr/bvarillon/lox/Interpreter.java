@@ -70,6 +70,11 @@ public class Interpreter implements Visitor<Object> {
     }
 
     @Override
+    public Object visit(Expr.Ternary expr){
+        return isThruthy(evaluate(expr.condition)) ? evaluate(expr.left) : evaluate(expr.right);
+    }
+
+    @Override
     public Object visit(Expr.Grouping expr){
         return evaluate(expr.exppression);
     }
