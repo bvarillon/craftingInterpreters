@@ -47,6 +47,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return (double)left * (double)right;
             case SLASH:
                 checkNumberOperand(expr.operator, left, right);
+                if((double)right == (double)0) throw new RuntimeError(expr.operator, "Right operand must be different from 0.");
                 return (double)left / (double)right;
             case PLUS:
                 if (left instanceof String && right instanceof String) {
