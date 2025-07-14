@@ -21,7 +21,8 @@ public class GenerateAST {
             "Grouping   : Expr expression",
             "Literal    : Object value",
             "Unary      : Token operator, Expr right",
-            "Var        : Token name"
+            "Var        : Token name",
+            "Ternary    : Expr condition, Expr left, Expr right"
         ));
         defineAst(output_dir, "Stmt", Arrays.asList(
             "Block      : List<Stmt> statements",

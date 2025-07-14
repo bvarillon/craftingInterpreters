@@ -107,12 +107,10 @@ public class Parser {
     private Expr ternary_operator(){
         Expr expr = comma_separated(); 
         if (match(QUESTION)) {
-            Token question = previous();
             Expr left = comma_separated();
             consume(DOUBLE_DOT, "Expect ':' in ternary_operator.");
-            Token double_dot = previous();
             Expr right = comma_separated();
-            expr = new Expr.Binary(expr, question, new Expr.Binary(left, double_dot, right));
+            expr = new Expr.Ternary(expr, left, right);
         }
         return expr; 
     }
@@ -200,12 +198,16 @@ public class Parser {
     }
 
     private boolean missing_op() {
-    if(match(PLUS,STAR,SLASH,GREATER_EQUAL,GREATER,LOWER_EQUAL,LOWER,BANG_EQUAL,EQUAL_EQUAL)) {
-        Token token = previous();
-        error(token, "Expect expression before binary operator.");
-        expression();
-        return true;
-    }
+        if(match(PLUS,STAR,SLASH,GREATER_EQUAL,GREATER,LOWER_EQUAL,LOWER,BANG_EQUAL,EQUAL_EQUAL)){
+            Token token = previous();
+            error(token, "Expect expression before binary operator.");
+            expression();
+            return true;
+        }
+        if(match(QUESTION)){
+            Token token = previous();
+            error(token,"Expecting expression before tenary operator.");
+        } 
         return false;
     }
 
