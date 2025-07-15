@@ -50,8 +50,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if((double)right == (double)0) throw new RuntimeError(expr.operator, "Right operand must be different from 0.");
                 return (double)left / (double)right;
             case PLUS:
-                if (left instanceof String && right instanceof String) {
-                return (String)left + (String)right;
+                if (left instanceof String || right instanceof String) {
+                return stringify(left) + stringify(right);
                 }
                 if (left instanceof Double && right instanceof Double) {
                 return (double)left + (double)right;
