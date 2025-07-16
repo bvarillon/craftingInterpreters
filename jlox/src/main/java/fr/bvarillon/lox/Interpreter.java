@@ -1,16 +1,19 @@
 package fr.bvarillon.lox;
 
-import fr.bvarillon.lox.Expr.Visitor;
+import java.util.List;
 
 /**
  * Interpreter
  */
-public class Interpreter implements Visitor<Object> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-    public void interpret(Expr expr) {
+    private Environment environment = new Environment();
+
+    public void interpret(List<Stmt> stmts) {
         try {
-            Object value = evaluate(expr);
-            System.out.println(stringify(value));
+            for(Stmt stmt : stmts){
+                execute(stmt);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
@@ -18,6 +21,10 @@ public class Interpreter implements Visitor<Object> {
 
     public Object evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    public void execute(Stmt stmt) {
+        stmt.accept(this);
     }
 
     @Override
@@ -71,7 +78,7 @@ public class Interpreter implements Visitor<Object> {
 
     @Override
     public Object visit(Expr.Grouping expr){
-        return evaluate(expr.exppression);
+        return evaluate(expr.expression);
     }
 
     @Override
@@ -85,6 +92,42 @@ public class Interpreter implements Visitor<Object> {
             case BANG:
                 return !isThruthy(right);
         }
+        return null;
+    }
+
+    @Override
+    public Object visit(Expr.Var expr){
+        return environment.get(expr.name);
+    }
+
+    @Override
+    public Object visit(Expr.Assign expr){
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name,value);
+        return value;
+    }
+
+    @Override
+    public Void visit(Stmt.Print stmt){
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
+    @Override
+    public Void visit(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+     @Override 
+    public Void visit(Stmt.Var stmt) {
+        Object value = null;
+        
+        if(stmt.initializer != null){
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme,value);
         return null;
     }
 
@@ -121,6 +164,4 @@ public class Interpreter implements Visitor<Object> {
         if (left instanceof Double && right instanceof Double) return;
         throw new RuntimeError(token, "Operands must be a numbers.");
     }
-
-    
 }

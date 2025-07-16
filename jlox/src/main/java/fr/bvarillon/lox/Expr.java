@@ -4,10 +4,28 @@ import java.util.List;
 
 abstract class Expr {
     interface Visitor<R> {
+    R visit(Assign EXPR);
     R visit(Binary EXPR);
     R visit(Grouping EXPR);
     R visit(Literal EXPR);
     R visit(Unary EXPR);
+    R visit(Var EXPR);
+    }
+
+// Class Assign
+    static class Assign extends Expr {
+    Assign(Token name, Expr value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Token name;
+        final Expr value;
     }
 
 // Class Binary
@@ -30,8 +48,8 @@ abstract class Expr {
 
 // Class Grouping
     static class Grouping extends Expr {
-    Grouping(Expr exppression) {
-        this.exppression = exppression;
+    Grouping(Expr expression) {
+        this.expression = expression;
     }
 
     @Override
@@ -39,7 +57,7 @@ abstract class Expr {
         return visitor.visit(this);
     }
 
-        final Expr exppression;
+        final Expr expression;
     }
 
 // Class Literal
@@ -70,6 +88,20 @@ abstract class Expr {
 
         final Token operator;
         final Expr right;
+    }
+
+// Class Var
+    static class Var extends Expr {
+    Var(Token name) {
+        this.name = name;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Token name;
     }
 
 

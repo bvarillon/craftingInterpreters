@@ -17,7 +17,7 @@ public class AstPrinter implements Expr.Visitor<String> {
 
     @Override
     public String visit(Expr.Grouping expr) {
-        return parenthesize("group", expr.exppression);
+        return parenthesize("group", expr.expression);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visit(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visit(Expr.Var expr) {
+        return expr.name.lexeme;
     }
 
     private String parenthesize(String name, Expr...exprs) {

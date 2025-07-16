@@ -16,10 +16,17 @@ public class GenerateAST {
         }
         String output_dir = args[0];
         defineAst(output_dir, "Expr", Arrays.asList(
-            "Binary : Expr left, Token operator, Expr right",
-            "Grouping   : Expr exppression",
+            "Assign     : Token name, Expr value",
+            "Binary     : Expr left, Token operator, Expr right",
+            "Grouping   : Expr expression",
             "Literal    : Object value",
-            "Unary      : Token operator, Expr right"
+            "Unary      : Token operator, Expr right",
+            "Var        : Token name"
+        ));
+        defineAst(output_dir, "Stmt", Arrays.asList(
+            "Expression : Expr expression",
+            "Print      : Expr expression",
+            "Var        : Token name, Expr initializer"
         ));
     } 
 
