@@ -9,6 +9,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private Environment environment = new Environment();
 
+    public void interpret_prompt(List<Stmt> stmts) {
+        try {
+            for(Stmt stmt : stmts){
+                if(stmt instanceof Stmt.Expression){
+                    System.out.println(evaluate(((Stmt.Expression)stmt).expression));
+                } else {
+                    execute(stmt);
+                }
+            }
+        } catch (RuntimeError error) {
+            Lox.runtimeError(error);
+        }
+    }
+
     public void interpret(List<Stmt> stmts) {
         try {
             for(Stmt stmt : stmts){

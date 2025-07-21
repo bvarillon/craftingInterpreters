@@ -46,13 +46,17 @@ public class Lox {
             System.out.print("> ");
             String line = reader.readLine();
             if (line == null) break;
-            run(line);
+            run(line, true);
             hadError = false;
         }
 
     }
 
     private static void run(String source){
+        run(source, false);
+    }
+
+    private static void run(String source, boolean repl){
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens(); 
 
@@ -62,7 +66,11 @@ public class Lox {
         if (hadError) return;
 
         // System.out.println(new AstPrinter().print(expr));
-        interpreter.interpret(stmts);
+        if(repl){
+            interpreter.interpret_prompt(stmts);
+        } else {
+            interpreter.interpret(stmts);
+        }
     }
 
     public static void error(int line, String message) {
