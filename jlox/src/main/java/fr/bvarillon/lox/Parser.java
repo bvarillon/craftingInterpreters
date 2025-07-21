@@ -52,7 +52,22 @@ public class Parser {
     private Stmt statement() {
         if (match(PRINT)) return printStatement();
 
+        if (match(LEFT_BRACE)){
+            return block();
+        }
+
         return expressionStatement();
+    }
+
+    private Stmt block() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while(!check(RIGHT_BRACE) && !isAtEnd()){
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' at end of block.");
+        return new Stmt.Block(statements);
     }
 
     private Stmt printStatement(){

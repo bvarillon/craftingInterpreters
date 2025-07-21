@@ -131,6 +131,24 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visit(Stmt.Block block){
+        execute_block(block.statements, new Environment(environment));
+        return null;
+    }
+
+    private void execute_block(List<Stmt> statements, Environment env){
+        Environment previous = environment;
+        try {
+            this.environment = env;
+            for (Stmt stmt : statements){
+                execute(stmt);
+            }
+        } finally {
+            this.environment = previous;
+        }
+    }
+
     private boolean isThruthy(Object obj) {
         if(obj == null) return false;
         if(obj instanceof Boolean) return (boolean)obj;
