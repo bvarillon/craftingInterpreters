@@ -73,6 +73,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return !isEqual(left,right);
             case EQUAL_EQUAL:
                 return isEqual(left,right);
+            case COMMA:
+                evaluate(expr.left);
+                return evaluate(expr.right);
         }
         return null;
     }

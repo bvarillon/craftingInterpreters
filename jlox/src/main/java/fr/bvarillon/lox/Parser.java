@@ -83,11 +83,21 @@ public class Parser {
     }
 
     private Expr expression() {
-        return assignment();
+        return comma_separated();
+    }
+
+    private Expr comma_separated() {
+        Expr  expr = assignment();
+        while(match(COMMA)) {
+            Token operator = previous();
+            Expr right = assignment();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+        return expr;
     }
 
     private Expr assignment() {
-        Expr expr = equality();
+        Expr expr = ternary_operator();
 
         if(match(EQUAl)) {
             Token equals = previous();
@@ -101,29 +111,20 @@ public class Parser {
             error(equals, "Invalid assignment target.");
         }
 
-        return ternary_operator();
+        return expr;
     }
 
     private Expr ternary_operator(){
-        Expr expr = comma_separated(); 
+        Expr expr = equality(); 
         if (match(QUESTION)) {
-            Expr left = comma_separated();
+            Expr left = equality();
             consume(DOUBLE_DOT, "Expect ':' in ternary_operator.");
-            Expr right = comma_separated();
+            Expr right = equality();
             expr = new Expr.Ternary(expr, left, right);
         }
         return expr; 
     }
 
-    private Expr comma_separated() {
-        Expr  expr = equality();
-        while(match(COMMA)) {
-            Token operator = previous();
-            Expr right = equality();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-        return expr;
-    }
 
     private Expr equality() {
         Expr expr = comparison();
@@ -269,6 +270,8 @@ public class Parser {
                 case WHILE:
                 case PRINT:
                 case RETURN:
+                case LEFT_BRACE:
+                case RIGHT_BRACE:
                     return;
             }
             advance();
