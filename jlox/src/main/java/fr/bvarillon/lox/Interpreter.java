@@ -96,6 +96,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visit(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR){
+            if(isThruthy(left)) return isThruthy(left);
+        } else {
+            if(!isThruthy(left)) return isThruthy(left);
+        }
+
+        return isThruthy(evaluate(expr.right));
+    }
+
+    @Override
     public Object visit(Expr.Var expr){
         return environment.get(expr.name);
     }
@@ -134,6 +147,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visit(Stmt.Block block){
         execute_block(block.statements, new Environment(environment));
+        return null;
+    }
+
+    @Override
+    public Void visit(Stmt.If stmt){
+        if(isThruthy(evaluate(stmt.condition)))
+            execute(stmt.thenStmt);
+        else if (stmt.elseStmt != null)
+            execute(stmt.elseStmt);
+        return null;
+    }
+
+    @Override
+    public Void visit(Stmt.While stmt) {
+        while(isThruthy(evaluate(stmt.condition)))
+            execute(stmt.body);
         return null;
     }
 
