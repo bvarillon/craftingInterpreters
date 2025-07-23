@@ -6,8 +6,10 @@ abstract class Expr {
     interface Visitor<R> {
     R visit(Assign EXPR);
     R visit(Binary EXPR);
+    R visit(Call EXPR);
     R visit(Grouping EXPR);
     R visit(Literal EXPR);
+    R visit(Logical EXPR);
     R visit(Unary EXPR);
     R visit(Var EXPR);
     R visit(Ternary EXPR);
@@ -47,6 +49,24 @@ abstract class Expr {
         final Expr right;
     }
 
+// Class Call
+    static class Call extends Expr {
+    Call(Expr callee, Token paren, List<Expr> arguments) {
+        this.callee = callee;
+        this.paren = paren;
+        this.arguments = arguments;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Expr callee;
+        final Token paren;
+        final List<Expr> arguments;
+    }
+
 // Class Grouping
     static class Grouping extends Expr {
     Grouping(Expr expression) {
@@ -73,6 +93,24 @@ abstract class Expr {
     }
 
         final Object value;
+    }
+
+// Class Logical
+    static class Logical extends Expr {
+    Logical(Expr left, Token operator, Expr right) {
+        this.left = left;
+        this.operator = operator;
+        this.right = right;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Expr left;
+        final Token operator;
+        final Expr right;
     }
 
 // Class Unary
