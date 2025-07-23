@@ -6,9 +6,11 @@ abstract class Stmt {
     interface Visitor<R> {
     R visit(Block STMT);
     R visit(Expression STMT);
+    R visit(Function STMT);
     R visit(If STMT);
     R visit(While STMT);
     R visit(Print STMT);
+    R visit(Return STMT);
     R visit(Var STMT);
     }
 
@@ -38,6 +40,24 @@ abstract class Stmt {
     }
 
         final Expr expression;
+    }
+
+// Class Function
+    static class Function extends Stmt {
+    Function(Token name, List<Token> params, List<Stmt> body) {
+        this.name = name;
+        this.params = params;
+        this.body = body;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Token name;
+        final List<Token> params;
+        final List<Stmt> body;
     }
 
 // Class If
@@ -86,6 +106,22 @@ abstract class Stmt {
     }
 
         final Expr expression;
+    }
+
+// Class Return
+    static class Return extends Stmt {
+    Return(Token keyword, Expr value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Token keyword;
+        final Expr value;
     }
 
 // Class Var
