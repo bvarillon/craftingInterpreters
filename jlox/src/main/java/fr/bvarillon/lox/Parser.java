@@ -313,7 +313,7 @@ public class Parser {
         if(!check(RIGHT_PAREN)){
             do {
                 if (arguments.size()>255) error(peek(), "Can't have more than 255 arguments.");
-                arguments.add(expression());
+                arguments.add(ternary_operator());
             } while (match(COMMA));
         }
 
@@ -333,10 +333,30 @@ public class Parser {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
+        }
+        if(match(FUN)){
+            return lambda();
         } else if (missing_op()){
             return expression();
         }
         throw error(peek(), "Expect expression.");
+    }
+
+    private Expr lambda(){
+        consume(LEFT_PAREN, "Expect '(' for anymous function declaration.");
+        List<Token> parameters = new ArrayList<>();
+        if(!check(RIGHT_PAREN)){
+            do {
+                if(parameters.size()>255) error(peek(), "Can't have more then 255 parameters.");
+                parameters.add(consume(IDENTIFIER, "Expect parameter name."));
+            } while(match(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters list.");
+        consume(LEFT_BRACE, "Exect '{' before body.");
+        Stmt.Block body = (Stmt.Block)block();
+
+        return new Expr.Lambda(parameters, body.statements);
+
     }
 
     private boolean missing_op() {

@@ -8,11 +8,12 @@ abstract class Expr {
     R visit(Binary EXPR);
     R visit(Call EXPR);
     R visit(Grouping EXPR);
+    R visit(Lambda EXPR);
     R visit(Literal EXPR);
     R visit(Logical EXPR);
+    R visit(Ternary EXPR);
     R visit(Unary EXPR);
     R visit(Var EXPR);
-    R visit(Ternary EXPR);
     }
 
 // Class Assign
@@ -81,6 +82,22 @@ abstract class Expr {
         final Expr expression;
     }
 
+// Class Lambda
+    static class Lambda extends Expr {
+    Lambda(List<Token> params, List<Stmt> body) {
+        this.params = params;
+        this.body = body;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final List<Token> params;
+        final List<Stmt> body;
+    }
+
 // Class Literal
     static class Literal extends Expr {
     Literal(Object value) {
@@ -113,6 +130,24 @@ abstract class Expr {
         final Expr right;
     }
 
+// Class Ternary
+    static class Ternary extends Expr {
+    Ternary(Expr condition, Expr left, Expr right) {
+        this.condition = condition;
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+        final Expr condition;
+        final Expr left;
+        final Expr right;
+    }
+
 // Class Unary
     static class Unary extends Expr {
     Unary(Token operator, Expr right) {
@@ -141,24 +176,6 @@ abstract class Expr {
     }
 
         final Token name;
-    }
-
-// Class Ternary
-    static class Ternary extends Expr {
-    Ternary(Expr condition, Expr left, Expr right) {
-        this.condition = condition;
-        this.left = left;
-        this.right = right;
-    }
-
-    @Override
-    <R> R accept(Visitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-        final Expr condition;
-        final Expr left;
-        final Expr right;
     }
 
 

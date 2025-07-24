@@ -60,6 +60,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visit(Expr.Lambda expr){
+        return new LoxLambda(expr,environment);
+    }
+    @Override
     public Object visit(Expr.Literal expr){
         return expr.value;
     }

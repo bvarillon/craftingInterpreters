@@ -26,5 +26,6 @@ unary       → ( "!" | "-" ) unary | call;
 call        → primary ( "(" arguments? ")" )* ;
 arguments   → expression ( "," expression )* ;
 primary     → NUMBER | STRING | "true" | "false" | "nil"
-                | "(" expression ")" | IDENTIFIER | missing_op ;
+              | "(" expression ")" | IDENTIFIER | lambda | missing_op ;
+lambda      → "fun" "(" parameters? ")" block ;
 missing_op     → ("+" | "/" | "*" | "<=" | "<" | ">=" | ">" | "!=" | "==") expression ;
