@@ -61,6 +61,11 @@ public class Lox {
 
         if (hadError) return;
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(stmts);
+
+        if (hadError) return;
+
         // System.out.println(new AstPrinter().print(expr));
         interpreter.interpret(stmts);
     }
